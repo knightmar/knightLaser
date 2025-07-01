@@ -6,9 +6,9 @@ use crate::backend::motors::Motor;
 
 #[derive(Clone)]
 pub struct Backend {
-    pub(crate) x_motor: Option<Motor>,
-    pub(crate) y_motor: Option<Motor>,
-    pub(crate) laser: Laser,
+    x_motor: Option<Motor>,
+    y_motor: Option<Motor>,
+    laser: Laser,
 }
 
 impl Backend {
@@ -30,7 +30,7 @@ impl Backend {
         })
     }
 
-    pub fn rotate_x(&mut self, angle: i32) -> Result<(), String> {
+    pub fn rotate_x(&self, angle: i32) -> Result<(), String> {
         if self.x_motor.is_none() {
             return Err("x_motor is None".to_string());
         }
@@ -38,7 +38,7 @@ impl Backend {
         Ok(())
     }
 
-    pub fn rotate_y(&mut self, angle: i32) -> Result<(), String> {
+    pub fn rotate_y(&self, angle: i32) -> Result<(), String> {
         if self.y_motor.is_none() {
             return Err("y_motor is None".to_string());
         }
@@ -50,9 +50,9 @@ impl Backend {
         println!("Starting backend");
 
         loop {
-            self.x_motor.clone().unwrap().rotate(-100);
+            self.rotate_x(-100);
             tokio::time::sleep(std::time::Duration::from_secs(1)).await;
-            self.x_motor.clone().unwrap().rotate(100);
+            self.rotate_x(100);
             tokio::time::sleep(std::time::Duration::from_secs(1)).await;
         }
     }

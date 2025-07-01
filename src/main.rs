@@ -13,7 +13,7 @@ mod website;
 
 #[rocket::main]
 async fn main() -> Result<(), rocket::Error> {
-    let backend = Backend::new("/dev/ttyACM0", "", 9600).unwrap();
+    let backend = Backend::new("", "", 9600).unwrap();
     let x = backend.clone();
     tokio::spawn(async move {
         x.start_backend().await;

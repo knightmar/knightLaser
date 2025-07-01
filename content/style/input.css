@@ -1,1 +1,5 @@
 @import "tailwindcss";
+
+button {
+    @apply px-4 py-2 border rounded bg-[#3cafe0] active:bg-[#fcbd19];
+}
