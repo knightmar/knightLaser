@@ -4,26 +4,23 @@ pub mod motors;
 use crate::backend::laser::Laser;
 use crate::backend::motors::Motor;
 
-async fn start<'a>() -> Result<(), &'a str> {
-    println!("Starting backend");
-
-    loop {
-        println!("Backend is running");
-        tokio::time::sleep(std::time::Duration::from_secs(1)).await;
-    }
-}
-
 #[derive(Clone)]
 pub struct Backend {
-    pub(crate) x_motor: Motor,
-    pub(crate) y_motor: Motor,
+    pub(crate) x_motor: Option<Motor>,
+    pub(crate) y_motor: Option<Motor>,
     pub(crate) laser: Laser,
 }
 
 impl Backend {
     pub fn new(port1: &str, port2: &str, rate: u32) -> Result<Backend, Box<dyn std::error::Error>> {
-        let x_motor = Motor::new(port1, rate)?;
-        let y_motor = Motor::new(port2, rate)?;
+        let mut x_motor = None;
+        let mut y_motor = None;
+        if port1 != "" {
+            x_motor = Some(Motor::new(port1, rate)?);
+        }
+        if port2 != "" {
+            y_motor = Some(Motor::new(port2, rate)?);
+        }
         let laser = Laser {};
 
         Ok(Backend {
@@ -33,18 +30,31 @@ impl Backend {
         })
     }
 
-    pub fn rotate_x(&mut self, angle: i32) {
-        println!("Rotate x by {}", angle);
-        self.x_motor.rotate(angle);
+    pub fn rotate_x(&mut self, angle: i32) -> Result<(), String> {
+        if self.x_motor.is_none() {
+            return Err("x_motor is None".to_string());
+        }
+        self.x_motor.clone().unwrap().rotate(angle);
+        Ok(())
     }
 
-    pub fn rotate_y(&mut self, angle: i32) {
-        println!("Rotate y by {}", angle);
-        self.y_motor.rotate(angle);
+    pub fn rotate_y(&mut self, angle: i32) -> Result<(), String> {
+        if self.y_motor.is_none() {
+            return Err("y_motor is None".to_string());
+        }
+        self.y_motor.clone().unwrap().rotate(angle);
+        Ok(())
     }
 
     pub async fn start_backend<'a>(&self) -> Result<(), &'a str> {
-        start().await
+        println!("Starting backend");
+
+        loop {
+            self.x_motor.clone().unwrap().rotate(-100);
+            tokio::time::sleep(std::time::Duration::from_secs(1)).await;
+            self.x_motor.clone().unwrap().rotate(100);
+            tokio::time::sleep(std::time::Duration::from_secs(1)).await;
+        }
     }
 
     pub fn get_int(&self) -> i32 {
