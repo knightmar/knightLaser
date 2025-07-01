@@ -21,20 +21,16 @@ pub struct Backend {
 }
 
 impl Backend {
-    pub fn new<'a>(port1: &str, port2: &str, rate: u32) -> Result<Backend, &'a str> {
-        let x_motor = Motor::new(port1, rate);
-        let y_motor = Motor::new(port2, rate);
+    pub fn new(port1: &str, port2: &str, rate: u32) -> Result<Backend, Box<dyn std::error::Error>> {
+        let x_motor = Motor::new(port1, rate)?;
+        let y_motor = Motor::new(port2, rate)?;
         let laser = Laser {};
 
-        if x_motor.is_ok() && y_motor.is_ok() {
-            Ok(Backend {
-                x_motor: x_motor?,
-                y_motor: y_motor?,
-                laser,
-            })
-        } else {
-            Err("Error when init motors and laser")
-        }
+        Ok(Backend {
+            x_motor,
+            y_motor,
+            laser,
+        })
     }
 
     pub fn rotate_x(&mut self, angle: i32) {
@@ -49,5 +45,9 @@ impl Backend {
 
     pub async fn start_backend<'a>(&self) -> Result<(), &'a str> {
         start().await
+    }
+
+    pub fn get_int(&self) -> i32 {
+        42
     }
 }
