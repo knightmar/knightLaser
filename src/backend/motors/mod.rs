@@ -18,6 +18,7 @@ impl Motor {
     }
     pub fn rotate(&self, angle: i32) {
         let mut serial = self.serial.lock().unwrap();
+        println!("{}", serial.name().unwrap());
         serial
             .write_all(angle.to_string().as_bytes())
             .expect("Failed to write to serial port");

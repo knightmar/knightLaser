@@ -50,10 +50,10 @@ impl Backend {
         println!("Starting backend");
 
         loop {
-            self.rotate_x(-100);
-            tokio::time::sleep(std::time::Duration::from_secs(1)).await;
-            self.rotate_x(100);
-            tokio::time::sleep(std::time::Duration::from_secs(1)).await;
+            // self.rotate_x(-100);
+            // tokio::time::sleep(std::time::Duration::from_secs(1)).await;
+            // self.rotate_x(100);
+            // tokio::time::sleep(std::time::Duration::from_secs(1)).await;
         }
     }
 

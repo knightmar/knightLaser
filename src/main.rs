@@ -1,19 +1,18 @@
 #[macro_use]
 extern crate rocket;
 
+use crate::api::send_pos;
 use crate::backend::Backend;
 use rocket::fs::FileServer;
 use std::path::Path;
-use crate::api::send_pos;
 
 mod api;
 mod backend;
 mod utils;
-mod website;
 
 #[rocket::main]
 async fn main() -> Result<(), rocket::Error> {
-    let backend = Backend::new("", "", 9600).unwrap();
+    let backend = Backend::new("/dev/ttyACM0", "/dev/ttyACM1", 9600).unwrap();
     let x = backend.clone();
     tokio::spawn(async move {
         x.start_backend().await;
