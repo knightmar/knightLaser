@@ -1,7 +1,7 @@
 #[macro_use]
 extern crate rocket;
 
-use crate::api::send_pos;
+use crate::api::{get_error_presence, send_pos};
 use crate::backend::Backend;
 use rocket::fs::FileServer;
 use std::path::Path;
@@ -12,7 +12,7 @@ mod utils;
 
 #[rocket::main]
 async fn main() -> Result<(), rocket::Error> {
-    let backend = Backend::new("/dev/ttyACM0", "/dev/ttyACM1", 9600).unwrap();
+    let backend = Backend::new("", "", 9600).unwrap();
     let x = backend.clone();
     tokio::spawn(async move {
         x.start_backend().await;
@@ -21,6 +21,7 @@ async fn main() -> Result<(), rocket::Error> {
         .manage(backend)
         .mount("/", FileServer::from(Path::new("./content")))
         .mount("/send_pos", routes![send_pos])
+        .mount("/get_error_presence", routes![get_error_presence])
         .launch()
         .await?;
 

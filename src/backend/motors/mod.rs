@@ -1,3 +1,5 @@
+use crate::utils::Error;
+use crate::utils::Error::MotorError;
 use serialport::SerialPort;
 use std::sync::{Arc, Mutex};
 
@@ -7,13 +9,13 @@ pub struct Motor {
 }
 
 impl Motor {
-    pub fn new<'a>(serial: &str, rate: u32) -> Result<Self, &'a str> {
+    pub fn new<'a>(serial: &str, rate: u32) -> Result<Self, Error> {
         if let Ok(port) = serialport::new(serial, rate).open() {
             Ok(Motor {
                 serial: Arc::new(Mutex::new(port)),
             })
         } else {
-            Err("Motor port not found")
+            Err(MotorError("Motor port not found".to_string()))
         }
     }
     pub fn rotate(&self, angle: i32) {
@@ -27,6 +29,6 @@ impl Motor {
 
 impl Drop for Motor {
     fn drop(&mut self) {
-        self.serial.lock().unwrap().clear_break();
+        self.serial.lock().unwrap().clear_break().expect("Failed to clear while dropping motor");
     }
 }
