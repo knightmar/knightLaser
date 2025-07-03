@@ -1,4 +1,2 @@
 #[derive(Clone)]
-pub struct Laser {
-    
-}
+pub struct Laser {}

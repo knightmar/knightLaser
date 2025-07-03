@@ -15,7 +15,7 @@
     <div class="flex flex-col bg-[#fff] p-4 rounded-lg shadow-lg gap-5 items-center">
         <label class="rounded-lg p-4">
             Motor angle:
-            <input id="nb_field" type="number" class="bg-[#d9e9f2] border rounded text-right " value="0">
+            <input class="bg-[#d9e9f2] border rounded text-right " id="nb_field" type="number" value="0">
         </label>
         <div class="flex gap-5">
             <button class="btn" onclick="moveMotor('X')">
@@ -26,14 +26,12 @@
             </button>
         </div>
     </div>
-    <div id="error_div" class="bg-[#ff5151] p-4 rounded-lg items-center flex flex-col shadow-lg">
+    <div class="bg-[#ff5151] p-4 rounded-lg items-center flex flex-col shadow-lg" id="error_div">
         <h1 class="text-xl font-bold">An error append..</h1>
         <p id="error_message"></p>
     </div>
 
 </div>
-
-
 <script src="scripts/index.js">
 </script>
 
